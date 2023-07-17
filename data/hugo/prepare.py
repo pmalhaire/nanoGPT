@@ -16,6 +16,15 @@ import numpy as np
 #
 # https://www.gutenberg.org/cache/epub/19657/pg19657.txt
 #
+# le Rhin
+#
+# https://www.gutenberg.org/files/41986/41986-0.txt
+# https://www.gutenberg.org/files/42151/42151-0.txt
+# https://www.gutenberg.org/files/40172/40172-0.txt
+# https://www.gutenberg.org/files/40239/40239-0.txt
+# https://www.gutenberg.org/files/29549/29549-0.txt
+#
+#
 # download hugo's book notre dame de Paris
 input_file_path = os.path.join(os.path.dirname(__file__), 'input.txt')
 if not os.path.exists(input_file_path):
@@ -24,7 +33,13 @@ if not os.path.exists(input_file_path):
 'https://www.gutenberg.org/cache/epub/17493/pg17493.txt',
 'https://www.gutenberg.org/cache/epub/17494/pg17494.txt',
 'https://www.gutenberg.org/cache/epub/17518/pg17518.txt',
-'https://www.gutenberg.org/cache/epub/17519/pg17519.txt'
+'https://www.gutenberg.org/cache/epub/17519/pg17519.txt',
+'https://www.gutenberg.org/cache/epub/19657/pg19657.txt',
+'https://www.gutenberg.org/files/41986/41986-0.txt'
+'https://www.gutenberg.org/files/42151/42151-0.txt'
+'https://www.gutenberg.org/files/40172/40172-0.txt'
+'https://www.gutenberg.org/files/40239/40239-0.txt'
+'https://www.gutenberg.org/files/29549/29549-0.txt'
  ]
     for data_url in data_urls :
       with open(input_file_path, 'a') as f:
