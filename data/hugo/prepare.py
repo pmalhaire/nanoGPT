@@ -46,11 +46,84 @@ if not os.path.exists(input_file_path):
         f.write(requests.get(data_url).text)
         f.write('\n')
 
+# start from
+include_patterns = [
+  ("*** START", "            *** END")
+]
+# remove license and html in books
+exclude_patterns = [
+  ("<!DOCTYPE html>", "</html>")
+]
+
+data = ""
+counter = 0
+logEveryCount = 1000
+
 with open(input_file_path, 'r') as f:
-    data = f.read()
+    exclude_patern = None
+    include_patern = None
+    while True:
+      line = f.readline()
+      if not line:
+        break
+      counter += 1
+
+      if counter % logEveryCount == 0:
+        print(f'reading line {counter}')
+
+      # end patern
+      if include_patern:
+        if line.startswith(include_patern[1]):
+          print(f'including ended:{counter}')
+          include_patern = None
+          continue
+      elif exclude_patern:
+        if line.startswith(exclude_patern[1]):
+          print(f'excluding ended:{counter}')
+          exclude_patern = None
+        # don't process excluded lines
+        continue
+
+      # start patern
+      for patern in include_patterns:
+        if line.startswith(patern[0]):
+          include_patern = patern
+          print(f'including from:{counter}')
+          continue
+      for patern in exclude_patterns:
+        if line.startswith(patern[0]):
+          exclude_patern = patern
+          print(f'excluding from:{counter}')
+          continue
+      data += line
+
 n = len(data)
-train_data = data[:int(n*0.9)]
-val_data = data[int(n*0.9):]
+
+# shuffle data or we'll always validate the same book
+# check that it matches train_hugo.py
+block_size = 1024
+chunk = 10*1024
+train_data = ""
+val_data = ""
+for i in range(0,n,chunk):
+  train_data += data[i:i+int(chunk*0.9)]
+  j = i+int(chunk*0.9)
+  # avoid cuting lines
+  while j<(n-1) and data[j] != '\n':
+    train_data += data[j]
+    j+=1
+  if j == n-1:
+    break
+  k = i+chunk-1
+  if k>(n-1):
+    k = n-1
+    if k > j:
+      break
+  while k>j and data[k] != '\n':
+    k-=1
+  val_data += data[j:k]
+  train_data += data[k:i+chunk]
+
 
 # encode with tiktoken gpt2 bpe
 enc = tiktoken.get_encoding("gpt2")
